@@ -2,12 +2,17 @@ package main
 
 import (
 	"fmt"
-	"restoros/config"
+	"os"
+	"restoros/argumentparser"
 )
 
 func main() {
 
-	json, err := config.Read()
-	fmt.Printf("%+v %v\n", json, err)
+	command, err := argumentparser.Parse(os.Args)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(-1)
+	}
+	fmt.Println(command)
 
 }

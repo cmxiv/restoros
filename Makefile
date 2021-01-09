@@ -1,4 +1,4 @@
 PKGS=$(shell go list ./...)
 
 test:
-	@go test $(PKGS)
+	@go test -coverprofile=coverage.out $(PKGS)
