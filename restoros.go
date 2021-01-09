@@ -1,7 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"restoros/config"
+)
 
 func main() {
-	fmt.Println("Hola!")
+
+	json, err := config.Read()
+	fmt.Printf("%+v %v\n", json, err)
+
 }
