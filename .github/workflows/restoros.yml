@@ -1,4 +1,4 @@
-name: Restoros
+name: restoros
 
 on:
   pull_request:
