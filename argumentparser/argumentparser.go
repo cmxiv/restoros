@@ -22,12 +22,19 @@ var commandMap = map[string]parserFunc{
 	"reset":   parsePrimaryOnly("reset"),
 	"list":    parsePrimaryOnly("list"),
 	"source":  parsePrimaryWithSecondaryAndArgs("source", sourceSecondaryCommandMap),
+	"config":  parsePrimaryWithSecondaryAndArgs("config", configSecondaryCommandMap),
 }
 
 var sourceSecondaryCommandMap = map[string]parserFunc{
 	"list":   parseSecondaryOnly("list"),
-	"add":    parseSecondaryWithArguments("add"),
-	"remove": parseSecondaryWithArguments("remove"),
+	"add":    parseSecondaryWithArguments("add", "requires source name"),
+	"remove": parseSecondaryWithArguments("remove", "requires source name"),
+}
+
+var configSecondaryCommandMap = map[string]parserFunc{
+	"init":   parseSecondaryOnly("init"),
+	"sync":   parseSecondaryOnly("sync"),
+	"origin": parseSecondaryWithArguments("origin", ""),
 }
 
 func Parse(arguments []string) (*Command, error) {
@@ -72,11 +79,10 @@ func parsePrimaryWithArguments(primary string) parserFunc {
 	}
 }
 
-func parseSecondaryWithArguments(secondary string) parserFunc {
+func parseSecondaryWithArguments(secondary string, errMessage string) parserFunc {
 	return func(arguments []string) (*Command, error) {
-		if len(arguments) < 1 {
-			err := "requires source name"
-			return nil, errorMessage(&secondary, &err)
+		if len(arguments) < 1 && errMessage != "" {
+			return nil, errorMessage(&secondary, &errMessage)
 		}
 		return &Command{
 			secondary: secondary,
@@ -144,11 +150,16 @@ Where options include:
 
 	reset: Restores the state of the system to when restoros was first installed
 
-	source: This option let's user manage sources. The following are the sub-commands:
+	source: This option let's user manage sources. Following are the sub-commands:
 		add: Add a source to restoros configuration
 		remove: Remove a source from restoros configuration
 		list: List all the present sources. The search for the packages will be done in the listed order
 		reorder: Reorder the currently configured sources
+	
+	config: This option let's user to manage the installation's configurations. Following are the sub-commands:
+		init: Initializes configurations for restoros
+		sync: Syncronizes with the origin all the changes in the configuration
+		origin: Set the origin to the provided github repository; Returns the current origin if not provided with an argument
 
 	list: Lists all the present packages managed by restoros
 `
