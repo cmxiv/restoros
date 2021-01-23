@@ -6,7 +6,6 @@ import (
 	"restoros/argumentparser"
 	"restoros/config"
 	"restoros/handler"
-	"restoros/sourcehandler"
 )
 
 func main() {
