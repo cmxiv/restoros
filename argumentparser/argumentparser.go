@@ -3,15 +3,10 @@ package argumentparser
 import (
 	"errors"
 	"fmt"
+	"restoros/models"
 )
 
-type Command struct {
-	primary   string
-	secondary string
-	arguments []string
-}
-
-type parserFunc = func([]string) (*Command, error)
+type parserFunc = func([]string) (*models.Command, error)
 
 var commandMap = map[string]parserFunc{
 	"install": parsePrimaryWithArguments("install"),
@@ -37,7 +32,7 @@ var configSecondaryCommandMap = map[string]parserFunc{
 	"origin": parseSecondaryWithArguments("origin", ""),
 }
 
-func Parse(arguments []string) (*Command, error) {
+func Parse(arguments []string) (*models.Command, error) {
 
 	if len(arguments) < 2 {
 		return nil, errorMessage(nil, nil)
@@ -55,44 +50,44 @@ func Parse(arguments []string) (*Command, error) {
 }
 
 func parsePrimaryOnly(primary string) parserFunc {
-	return func(args []string) (*Command, error) {
-		return &Command{primary: primary}, nil
+	return func(args []string) (*models.Command, error) {
+		return &models.Command{Primary: primary}, nil
 	}
 }
 
 func parseSecondaryOnly(secondary string) parserFunc {
-	return func(arguments []string) (*Command, error) {
-		return &Command{secondary: secondary}, nil
+	return func(arguments []string) (*models.Command, error) {
+		return &models.Command{Secondary: secondary}, nil
 	}
 }
 
 func parsePrimaryWithArguments(primary string) parserFunc {
-	return func(arguments []string) (*Command, error) {
+	return func(arguments []string) (*models.Command, error) {
 		if len(arguments) < 1 {
 			err := "requires package name"
 			return nil, errorMessage(&primary, &err)
 		}
-		return &Command{
-			primary:   primary,
-			arguments: arguments,
+		return &models.Command{
+			Primary:   primary,
+			Arguments: arguments,
 		}, nil
 	}
 }
 
 func parseSecondaryWithArguments(secondary string, errMessage string) parserFunc {
-	return func(arguments []string) (*Command, error) {
+	return func(arguments []string) (*models.Command, error) {
 		if len(arguments) < 1 && errMessage != "" {
 			return nil, errorMessage(&secondary, &errMessage)
 		}
-		return &Command{
-			secondary: secondary,
-			arguments: arguments,
+		return &models.Command{
+			Secondary: secondary,
+			Arguments: arguments,
 		}, nil
 	}
 }
 
 func parsePrimaryWithSecondaryAndArgs(primary string, secondaryMap map[string]parserFunc) parserFunc {
-	return func(arguments []string) (*Command, error) {
+	return func(arguments []string) (*models.Command, error) {
 
 		if len(arguments) < 1 {
 			err := "requires a sub-option"
@@ -109,10 +104,10 @@ func parsePrimaryWithSecondaryAndArgs(primary string, secondaryMap map[string]pa
 			return nil, err
 		}
 
-		return &Command{
-			primary:   primary,
-			secondary: subCommand.secondary,
-			arguments: subCommand.arguments,
+		return &models.Command{
+			Primary:   primary,
+			Secondary: subCommand.Secondary,
+			Arguments: subCommand.Arguments,
 		}, nil
 	}
 }
