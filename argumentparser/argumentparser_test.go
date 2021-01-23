@@ -1,6 +1,7 @@
 package argumentparser
 
 import (
+	"restoros/models"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -9,7 +10,7 @@ import (
 type Test struct {
 	isNegative     bool
 	expectedError  string
-	expectedOutput *Command
+	expectedOutput *models.Command
 	input          []string
 }
 
@@ -27,27 +28,27 @@ func TestPrimaryOnlyCommands(t *testing.T) {
 			input:         []string{"foo-bar"},
 		},
 		"Verify parses `restore` command": {
-			expectedOutput: &Command{primary: "restore"},
+			expectedOutput: &models.Command{Primary: "restore"},
 			input:          []string{"restore"},
 		},
 		"Verify ignores any other arguments passes along with `restore`": {
-			expectedOutput: &Command{primary: "restore"},
+			expectedOutput: &models.Command{Primary: "restore"},
 			input:          []string{"restore", "fake-argument"},
 		},
 		"Verify parses `reset` command": {
-			expectedOutput: &Command{primary: "reset"},
+			expectedOutput: &models.Command{Primary: "reset"},
 			input:          []string{"reset"},
 		},
 		"Verify ignores any other arguments passes along with `reset`": {
-			expectedOutput: &Command{primary: "reset"},
+			expectedOutput: &models.Command{Primary: "reset"},
 			input:          []string{"reset", "fake-argument"},
 		},
 		"Verify parses `list` command": {
-			expectedOutput: &Command{primary: "list"},
+			expectedOutput: &models.Command{Primary: "list"},
 			input:          []string{"list"},
 		},
 		"Verify ignores any other arguments passes along with `list`": {
-			expectedOutput: &Command{primary: "list"},
+			expectedOutput: &models.Command{Primary: "list"},
 			input:          []string{"list", "fake-argument"},
 		},
 	}
@@ -64,7 +65,7 @@ func TestPrimaryWithArgumentsCommands(t *testing.T) {
 			input:         []string{"install"},
 		},
 		"Verify parses other arguments passes along with `install`": {
-			expectedOutput: &Command{primary: "install", arguments: []string{"package-name"}},
+			expectedOutput: &models.Command{Primary: "install", Arguments: []string{"package-name"}},
 			input:          []string{"install", "package-name"},
 		},
 		"Verify throws error when only `update` command is passed": {
@@ -73,7 +74,7 @@ func TestPrimaryWithArgumentsCommands(t *testing.T) {
 			input:         []string{"update"},
 		},
 		"Verify parses other arguments passes along with `update`": {
-			expectedOutput: &Command{primary: "update", arguments: []string{"package-name"}},
+			expectedOutput: &models.Command{Primary: "update", Arguments: []string{"package-name"}},
 			input:          []string{"update", "package-name"},
 		},
 		"Verify throws error when only `remove` command is passed": {
@@ -82,7 +83,7 @@ func TestPrimaryWithArgumentsCommands(t *testing.T) {
 			input:         []string{"remove"},
 		},
 		"Verify parses other arguments passes along with `remove`": {
-			expectedOutput: &Command{primary: "remove", arguments: []string{"package-name"}},
+			expectedOutput: &models.Command{Primary: "remove", Arguments: []string{"package-name"}},
 			input:          []string{"remove", "package-name"},
 		},
 		"Verify throws error when only `purge` command is passed": {
@@ -91,7 +92,7 @@ func TestPrimaryWithArgumentsCommands(t *testing.T) {
 			input:         []string{"purge"},
 		},
 		"Verify parses other arguments passes along with `purge`": {
-			expectedOutput: &Command{primary: "purge", arguments: []string{"package-name"}},
+			expectedOutput: &models.Command{Primary: "purge", Arguments: []string{"package-name"}},
 			input:          []string{"purge", "package-name"},
 		},
 	}
@@ -118,7 +119,7 @@ func TestPrimaryWithSecondaryArgumentsCommands(t *testing.T) {
 		},
 		"Verify parses other arguments passed along with `source add`": {
 			input:          []string{"source", "add", "source-name"},
-			expectedOutput: &Command{primary: "source", secondary: "add", arguments: []string{"source-name"}},
+			expectedOutput: &models.Command{Primary: "source", Secondary: "add", Arguments: []string{"source-name"}},
 		},
 		"Verify throws error when no source name is provided with `source remove`": {
 			isNegative:    true,
@@ -127,11 +128,11 @@ func TestPrimaryWithSecondaryArgumentsCommands(t *testing.T) {
 		},
 		"Verify parses other arguments passed along with `source remove`": {
 			input:          []string{"source", "remove", "source-name"},
-			expectedOutput: &Command{primary: "source", secondary: "remove", arguments: []string{"source-name"}},
+			expectedOutput: &models.Command{Primary: "source", Secondary: "remove", Arguments: []string{"source-name"}},
 		},
 		"Verify parses other arguments passed along with `source list`": {
 			input:          []string{"source", "list"},
-			expectedOutput: &Command{primary: "source", secondary: "list"},
+			expectedOutput: &models.Command{Primary: "source", Secondary: "list"},
 		},
 	}
 
