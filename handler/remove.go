@@ -8,6 +8,6 @@ type RemoveHandler struct {
 }
 
 // Handle -
-func (removeHandler *RemoveHandler) Handle(config *models.Config) *models.Config {
-	return config
+func (removeHandler *RemoveHandler) Handle(config *models.Config) (*models.Config, error) {
+	return config, nil
 }

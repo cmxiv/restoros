@@ -8,6 +8,6 @@ type ResetHandler struct {
 }
 
 // Handle -
-func (resetHandler *ResetHandler) Handle(config *models.Config) *models.Config {
-	return config
+func (resetHandler *ResetHandler) Handle(config *models.Config) (*models.Config, error) {
+	return config, nil
 }

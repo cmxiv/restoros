@@ -8,6 +8,6 @@ type PurgeHandler struct {
 }
 
 // Handle -
-func (purgeHandler *PurgeHandler) Handle(config *models.Config) *models.Config {
-	return config
+func (purgeHandler *PurgeHandler) Handle(config *models.Config) (*models.Config, error) {
+	return config, nil
 }

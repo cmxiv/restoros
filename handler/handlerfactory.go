@@ -20,7 +20,7 @@ var (
 
 // Handler -
 type Handler interface {
-	Handle(*models.Config) *models.Config
+	Handle(*models.Config) (*models.Config, error)
 }
 
 // GetHandler - Singleton - Not Thread safe (Yet!)

@@ -10,12 +10,12 @@ import (
 
 func main() {
 
-	cfg, err := config.Read()
+	command, err := argumentparser.Parse(os.Args)
 	if err != nil {
 		printAndExit(err)
 	}
 
-	command, err := argumentparser.Parse(os.Args)
+	cfg, err := config.Read(command)
 	if err != nil {
 		printAndExit(err)
 	}
@@ -25,7 +25,15 @@ func main() {
 		printAndExit(err)
 	}
 
-	cfg = hndlr.Handle(cfg)
+	cfg, err = hndlr.Handle(cfg)
+	if cfg == nil {
+		printAndExit(fmt.Errorf("Nil configuration"))
+	}
+
+	if err != nil {
+		printAndExit(err)
+	}
+
 	if cfg.Modified {
 		if err = config.Write(cfg); err != nil {
 			printAndExit(err)
