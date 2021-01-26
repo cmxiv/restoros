@@ -1,5 +1,7 @@
 package models
 
+import "github.com/go-git/go-git/v5"
+
 // Command -
 type Command struct {
 	Primary   string
@@ -9,9 +11,11 @@ type Command struct {
 
 // Config -
 type Config struct {
-	Modified bool
-	Sources  []string  `json:"sources"`
-	Packages []Package `json:"packages"`
+	Modified   bool            `json:"-"`
+	PushUpdate bool            `json:"-"`
+	Repository *git.Repository `json:"-"`
+	Sources    []string        `json:"sources"`
+	Packages   []Package       `json:"packages"`
 }
 
 // Package -

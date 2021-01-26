@@ -10,7 +10,7 @@ type InstallHandler struct {
 }
 
 // Handle -
-func (installHandler *InstallHandler) Handle(config *models.Config) *models.Config {
+func (installHandler *InstallHandler) Handle(config *models.Config) (*models.Config, error) {
 	// Multi-threaded search for the package
 	// Wait untill all threads return
 	// If multiple positive responses
@@ -19,5 +19,5 @@ func (installHandler *InstallHandler) Handle(config *models.Config) *models.Conf
 	//		 return with negative user response
 	// Else
 	// 		Install the package and update the config file; Marking config as modified
-	return config
+	return config, nil
 }
