@@ -2,6 +2,11 @@ package models
 
 import "github.com/go-git/go-git/v5"
 
+type NeoCommand struct {
+	CommandArrray []string
+	Arguments []string
+}
+
 // Command -
 type Command struct {
 	Primary   string
