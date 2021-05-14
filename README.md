@@ -24,7 +24,8 @@ restoros [options] <sub-options> <package>
 
 | Options | Description |
 |---------|-------------|
-| Install | Install package by searching for them in the configured sources. Return with options if multiple hits in sources or fails if nothing found|
+| Import | Import all the possible packages from the current system to restoros |
+| Install | Install package by searching for them in the configured sources. Return with options if multiple hits in sources or fails if nothing found |
 | update | Updates package if any available |
 | remove | Removes package if installed (doesn't remove from configuration) |
 | purge | Removes package and purges any records from restoros configuration |
@@ -32,7 +33,7 @@ restoros [options] <sub-options> <package>
 | reset | Restors the state of the system to when restoros was first installed (under scrutiny, might not make it in the releases) |
 | source | This option is used to manage the sources (the package managers) from where the packages are being installed/managed. See the table below for the sub-options for source|
 | config | This option is used to manage restoros's configurations. See the table below for the sub-options for config |
-| list | Lists all the isntalled packages being managed by restoros |
+| list | Lists all the installed packages being managed by restoros |
 
 ### Source sub-options
 
