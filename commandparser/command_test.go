@@ -1,13 +1,29 @@
 package commandparser
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGivenCommandWhenExecCalledThenShouldInvokeHandler(t *testing.T) {
-	handler := func(args []string) bool { return len(args) == 2 }
+type MockHandler struct{}
+
+func (mockHandler *MockHandler) Handle(args []string) error {
+	if len(args) < 2 {
+		return fmt.Errorf("mock handler")
+	}
+	return nil
+}
+
+func TestGivenCommandWhenExecCalledThenShouldInvokeHandlerAndReturnNil(t *testing.T) {
+	handler := &MockHandler{}
 	command := Command{handler: handler, args: []string{"foo", "bar"}}
-	assert.True(t, command.Exec())
+	assert.Nil(t, command.Exec())
+}
+
+func TestGivenCommandWhenExecCalledThenShouldInvokeHandlerAndReturnError(t *testing.T) {
+	handler := &MockHandler{}
+	command := Command{handler: handler}
+	assert.Error(t, command.Exec())
 }
