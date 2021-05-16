@@ -1,7 +1,7 @@
 
 .PHONY: test
 test: clean
-	@go test -v -coverprofile=coverage.out ./...
+	@go test -coverprofile=coverage.out ./...
 
 test/coverage: test
 	@go tool cover -html=coverage.out
