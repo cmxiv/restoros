@@ -1,52 +1,60 @@
 package commandparser
 
+import (
+	"restoros/configurationmanager"
+	"restoros/handler"
+	"restoros/handler/confighandler"
+)
+
 func Parse(args []string) (*Command, bool) {
 	return createCommandTree().parse(args)
 }
 
 func createCommandTree() *node {
+	manager := configurationmanager.Manager{}
+	notImplementedHandler := &handler.NotImplementedHandler{}
 	return &node{
 		children: []*node{
 			{
 				argument: "import",
 				children: []*node{
-					{command: &Command{handler: falseFunc}},
+					{command: &Command{handler: notImplementedHandler}},
 				},
 			},
 			{
 				argument: "install",
 				children: []*node{
-					{command: &Command{handler: falseFunc}},
+					{command: &Command{handler: notImplementedHandler}},
 				},
 			},
 			{
 				argument: "update",
 				children: []*node{
-					{command: &Command{handler: falseFunc}},
+					{command: &Command{handler: notImplementedHandler}},
 				},
 			},
 			{
 				argument: "remove",
 				children: []*node{
-					{command: &Command{handler: falseFunc}},
+					{command: &Command{handler: notImplementedHandler}},
 				},
 			},
 			{
 				argument: "purge",
 				children: []*node{
-					{command: &Command{handler: falseFunc}},
+					{command: &Command{handler: notImplementedHandler}},
 				},
 			},
 			{
 				argument: "restore",
 				children: []*node{
-					{command: &Command{handler: falseFunc}},
+					{command: &Command{handler: notImplementedHandler}},
 				},
 			},
 			{
 				argument: "reset",
 				children: []*node{
-					{command: &Command{handler: falseFunc}},
+					{command: &Command{handler: notImplementedHandler}},
 				},
 			},
 			{
@@ -55,19 +63,19 @@ func createCommandTree() *node {
 					{
 						argument: "add",
 						children: []*node{
-							{command: &Command{handler: falseFunc}},
+							{command: &Command{handler: notImplementedHandler}},
 						},
 					},
 					{
 						argument: "remove",
 						children: []*node{
-							{command: &Command{handler: falseFunc}},
+							{command: &Command{handler: notImplementedHandler}},
 						},
 					},
 					{
 						argument: "list",
 						children: []*node{
-							{command: &Command{handler: falseFunc}},
+							{command: &Command{handler: notImplementedHandler}},
 						},
 					},
 				},
@@ -78,19 +86,19 @@ func createCommandTree() *node {
 					{
 						argument: "init",
 						children: []*node{
-							{command: &Command{handler: falseFunc}},
+							{command: &Command{handler: &confighandler.ConfigInitHandler{Manager: manager}}},
 						},
 					},
 					{
 						argument: "sync",
 						children: []*node{
-							{command: &Command{handler: falseFunc}},
+							{command: &Command{handler: notImplementedHandler}},
 						},
 					},
 					{
 						argument: "origin",
 						children: []*node{
-							{command: &Command{handler: falseFunc}},
+							{command: &Command{handler: notImplementedHandler}},
 						},
 					},
 				},
@@ -98,15 +106,11 @@ func createCommandTree() *node {
 			{
 				argument: "list",
 				children: []*node{
-					{command: &Command{handler: falseFunc}},
+					{command: &Command{handler: notImplementedHandler}},
 				},
 			},
 		},
 	}
-}
-
-func falseFunc(args []string) bool {
-	return false
 }
 
 type node struct {

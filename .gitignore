@@ -1,4 +1,5 @@
 bin/
+.vscode/
 go.sum
 coverage.out
 restoros

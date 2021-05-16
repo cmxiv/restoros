@@ -1,10 +1,12 @@
 package commandparser
 
+import "restoros/handler"
+
 type Command struct {
-	handler func([]string) bool
+	handler handler.Handler
 	args []string
 }
 
-func (command Command) Exec() bool {
-	return command.handler(command.args);
+func (command Command) Exec() error {
+	return command.handler.Handle(command.args)
 }

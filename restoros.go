@@ -12,7 +12,10 @@ func main() {
 		fmt.Print(UsageMessage)
 		os.Exit(-1)
 	}
-	command.Exec()
+	if err := command.Exec(); err != nil {
+		fmt.Println(err)
+		os.Exit(-1)
+	}
 }
 
 const UsageMessage = `

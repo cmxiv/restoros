@@ -2,7 +2,6 @@ package sourcehandler
 
 import (
 	"fmt"
-	"restoros/argumentparser"
 )
 
 // SourceHandler -
@@ -45,6 +44,6 @@ func GetSourceHandler(source string) (SourceHandler, error) {
 		}
 		return npm, nil
 	default:
-		return nil, fmt.Errorf("Invalid source" + argumentparser.UsageMessage)
+		return nil, fmt.Errorf("Invalid source")
 	}
 }

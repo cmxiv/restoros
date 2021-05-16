@@ -1,7 +1,7 @@
 
 .PHONY: test
 test: clean
-	@go test -coverprofile=coverage.out ./...
+	@go test -v -coverprofile=coverage.out ./...
 
 test/coverage: test
 	@go tool cover -html=coverage.out
@@ -9,5 +9,9 @@ test/coverage: test
 clean:
 	@rm -f coverage.out restoros
 
+cleanall: clean
+	@rm -rf $(HOME)/.restoros
+
 run: clean
-	@go build && ./restoros $(RESTOROS_ARGS)
+	go build
+	./restoros $(RESTOROS_ARGS)
