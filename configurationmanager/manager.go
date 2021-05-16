@@ -6,8 +6,6 @@ import (
 	"os"
 )
 
-const configurationFilename = ".restoros/configuration.json"
-
 type IManager interface {
 	IsConfigurationInitialized() bool
 	Write(*RestorosConfiguration) error
@@ -16,15 +14,13 @@ type IManager interface {
 
 type Manager struct{}
 
-func (manager Manager) IsConfigurationInitialized() bool {
-	home := homeDirectory()
-	_, err := os.Stat(home + "/" + configurationFilename)
+func (manager *Manager) IsConfigurationInitialized() bool {
+	_, err := os.Stat(pathFromRestorosDirectory([]string{CONFIGURATION_FILE_NAME}))
 	return !os.IsNotExist(err)
 }
 
-func (manager Manager) Read() (*RestorosConfiguration, error) {
-	home := homeDirectory()
-	jsonFile, err := ioutil.ReadFile(home + "/" + configurationFilename)
+func (manager *Manager) Read() (*RestorosConfiguration, error) {
+	jsonFile, err := ioutil.ReadFile(pathFromRestorosDirectory([]string{CONFIGURATION_FILE_NAME}))
 	if err != nil {
 		return nil, err
 	}
@@ -37,18 +33,19 @@ func (manager Manager) Read() (*RestorosConfiguration, error) {
 	return configuration, nil
 }
 
-func (manager Manager) Write(configuration *RestorosConfiguration) error {
+func (manager *Manager) Write(configuration *RestorosConfiguration) error {
 	home := homeDirectory()
 
 	if !isConfigDirectoryInitialized() {
 		cwd, _ := os.Getwd()
 		os.Chdir(home)
-		os.Mkdir(".restoros", 0755)
+		os.Mkdir(RESTOROS_DIR_NAME, 0755)
 		os.Chdir(cwd)
 	}
 
 	cfgByte, _ := json.Marshal(configuration)
-	if err := ioutil.WriteFile(home+"/"+configurationFilename, cfgByte, 0755); err != nil {
+	filePath := pathFromRestorosDirectory([]string{CONFIGURATION_FILE_NAME})
+	if err := ioutil.WriteFile(filePath, cfgByte, 0755); err != nil {
 		return err
 	}
 

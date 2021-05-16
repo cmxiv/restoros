@@ -9,6 +9,7 @@ import (
 )
 
 type IRepositoryManager interface {
+	Initialize() error
 	GetOrigin() string
 	SetOrigin(string) error
 }
@@ -17,10 +18,15 @@ type RepositoryManager struct {
 	Path string
 }
 
+func (manager *RepositoryManager) Initialize() error {
+	_, err := git.PlainInit(manager.Path, false)
+	return err
+}
+
 func (manager *RepositoryManager) GetOrigin() string {
 	repo := manager.getRepository()
 	if repo == nil {
-		return ""
+		return "repository doesn't exist"
 	}
 
 	remote, err := repo.Remote("origin")

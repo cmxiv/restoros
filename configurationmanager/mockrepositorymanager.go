@@ -1,8 +1,13 @@
 package configurationmanager
 
 type MockRepositoryManager struct {
+	InitializeReturn    error
 	GetOriginReturn     string
 	SetOriginCalledWith string
+}
+
+func (manager *MockRepositoryManager) Initialize() error {
+	return manager.InitializeReturn
 }
 
 func (manager *MockRepositoryManager) GetOrigin() string {

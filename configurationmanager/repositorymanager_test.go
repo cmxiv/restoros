@@ -27,10 +27,10 @@ func TestGivenDirectoryWithGitInitAndNoOriginSetWhenGetOriginCalledThenReturnEmp
 	assert.Equal(t, "", manager.GetOrigin())
 }
 
-func TestGivenDirectoryWithoutGitInitSetWhenGetOriginCalledThenReturnEmptyString(t *testing.T) {
+func TestGivenDirectoryWithoutGitInitSetWhenGetOriginCalledThenReturnConfigurationDoesntExist(t *testing.T) {
 	tmpDirPath := t.TempDir()
 	manager := RepositoryManager{Path: tmpDirPath}
-	assert.Equal(t, "", manager.GetOrigin())
+	assert.Equal(t, "repository doesn't exist", manager.GetOrigin())
 }
 
 func TestGivenGitDirectoryWhenSetOriginCalledWithValidURLThenShouldSetOriginToProvidedURL(t *testing.T) {
@@ -61,6 +61,13 @@ func TestGivenNotGitInitializedDirectoryWhenSetOriginCalledThenReturnRepositoryN
 	assert.EqualError(t, manager.SetOrigin(origin), "repository not found or initialized")
 }
 
+func TestGivenEmptyDirectoryWhenInitializeCalledThenShouldInitializeGitRepository(t *testing.T) {
+	tmpDirPath := t.TempDir()
+	manager := RepositoryManager{Path: tmpDirPath}
+	assert.Nil(t, manager.Initialize())
+	assert.True(t, isGitInitialized(tmpDirPath))
+}
+
 func setupGit(tmpDirPath string) *git.Repository {
 	tmpRepo, _ := git.PlainInit(tmpDirPath, false)
 	return tmpRepo
@@ -72,4 +79,9 @@ func setupGitWithOrigin(tmpDirPath string, origin string) {
 		Name: "origin",
 		URLs: []string{origin},
 	})
+}
+
+func isGitInitialized(tmpDirPath string) bool {
+	_, err := git.PlainOpen(tmpDirPath)
+	return err == nil
 }

@@ -11,7 +11,8 @@ func Parse(args []string) (*Command, bool) {
 }
 
 func createCommandTree() *node {
-	manager := configurationmanager.Manager{}
+	manager := &configurationmanager.Manager{}
+	repositoryManager := &configurationmanager.RepositoryManager{Path: configurationmanager.RestorosDirectory()}
 	notImplementedHandler := &handler.NotImplementedHandler{}
 	return &node{
 		children: []*node{
@@ -86,7 +87,14 @@ func createCommandTree() *node {
 					{
 						argument: "init",
 						children: []*node{
-							{command: &Command{handler: &confighandler.ConfigInitHandler{Manager: manager}}},
+							{
+								command: &Command{
+									handler: &confighandler.ConfigInitHandler{
+										Manager:     manager,
+										RepoManager: repositoryManager,
+									},
+								},
+							},
 						},
 					},
 					{
@@ -98,7 +106,13 @@ func createCommandTree() *node {
 					{
 						argument: "origin",
 						children: []*node{
-							{command: &Command{handler: notImplementedHandler}},
+							{
+								command: &Command{
+									handler: &confighandler.ConfigOriginHandler{
+										RepoManager: repositoryManager,
+									},
+								},
+							},
 						},
 					},
 				},
@@ -134,7 +148,7 @@ func (n *node) parse(args []string) (*Command, bool) {
 		if len(tmp.children) == 1 && tmp.children[0].command != nil {
 			command = &Command{
 				handler: tmp.children[0].command.handler,
-				args: args[commandIndex:],
+				args:    args[commandIndex:],
 			}
 			break
 		}
