@@ -100,7 +100,13 @@ func createCommandTree() *node {
 					{
 						argument: "sync",
 						children: []*node{
-							{command: &Command{handler: notImplementedHandler}},
+							{
+								command: &Command{
+									handler: &confighandler.ConfigSyncHandler{
+										RepoManager: repositoryManager,
+									},
+								},
+							},
 						},
 					},
 					{

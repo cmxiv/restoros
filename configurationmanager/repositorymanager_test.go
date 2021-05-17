@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const origin = "https://github.com/cmxiv/systemconfig"
+const origin = "git@github.com:cmxiv/systemconfig.git"
 
 func TestGivenDirectoryWithGitAndOriginSetWhenGetOriginCalledThenReturnOriginUrl(t *testing.T) {
 	tmpDirPath := t.TempDir()
@@ -38,21 +38,22 @@ func TestGivenGitDirectoryWhenSetOriginCalledWithValidURLThenShouldSetOriginToPr
 	repository := setupGit(tmpDirPath)
 
 	manager := RepositoryManager{Path: tmpDirPath}
-	assert.Nil(t, manager.SetOrigin(origin))
 
-	remote, _ := repository.Remote("origin")
-	assert.Equal(t, origin, remote.Config().URLs[0])
+	if assert.Nil(t, manager.SetOrigin(origin)) {
+		remote, _ := repository.Remote("origin")
+		assert.Equal(t, origin, remote.Config().URLs[0])
+	}
 }
 
 func TestWhenSetOriginCalledWithInvalidURLThenReturnInvalidUrlError(t *testing.T) {
 	manager := RepositoryManager{Path: ""}
-	assert.EqualError(t, manager.SetOrigin("foobar"), "invalid origin url foobar (only support github urls)")
+	assert.EqualError(t, manager.SetOrigin("foobar"), "invalid origin foobar (only support github via ssh)")
 }
 
 func TestWhenSetOriginCalledWithHostNotGithubThenReturnInvalidUrlError(t *testing.T) {
 	manager := RepositoryManager{Path: ""}
 	notGithubUrl := "https://foobar.com/bizbaz"
-	assert.EqualError(t, manager.SetOrigin(notGithubUrl), fmt.Sprintf("invalid origin url %s (only support github urls)", notGithubUrl))
+	assert.EqualError(t, manager.SetOrigin(notGithubUrl), fmt.Sprintf("invalid origin %s (only support github via ssh)", notGithubUrl))
 }
 
 func TestGivenNotGitInitializedDirectoryWhenSetOriginCalledThenReturnRepositoryNotFoundError(t *testing.T) {
