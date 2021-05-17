@@ -2,7 +2,7 @@ package configurationmanager
 
 import (
 	"fmt"
-	"net/url"
+	"strings"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/config"
@@ -62,9 +62,9 @@ func (manager *RepositoryManager) GetOrigin() string {
 }
 
 func (manager *RepositoryManager) SetOrigin(originUri string) error {
-	origin, err := url.ParseRequestURI(originUri)
-	if err != nil || (origin != nil && origin.Host != "github.com") {
-		return fmt.Errorf("invalid origin url %s (only support github urls)", originUri)
+
+	if !strings.HasPrefix(originUri, "git@github.com") || !strings.HasSuffix(originUri, ".git") {
+		return fmt.Errorf("invalid origin %s (only support github via ssh)", originUri)
 	}
 
 	repo := manager.getRepository()
@@ -72,7 +72,7 @@ func (manager *RepositoryManager) SetOrigin(originUri string) error {
 		return fmt.Errorf("repository not found or initialized")
 	}
 
-	_, err = repo.CreateRemote(&config.RemoteConfig{
+	_, err := repo.CreateRemote(&config.RemoteConfig{
 		Name: "origin",
 		URLs: []string{originUri},
 	})

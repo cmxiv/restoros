@@ -4,6 +4,7 @@ type MockRepositoryManager struct {
 	InitializeReturn    error
 	GetOriginReturn     string
 	SetOriginCalledWith string
+	SyncCalled          bool
 }
 
 func (manager *MockRepositoryManager) Initialize() error {
@@ -11,6 +12,7 @@ func (manager *MockRepositoryManager) Initialize() error {
 }
 
 func (manager *MockRepositoryManager) Sync() error {
+	manager.SyncCalled = true
 	return nil
 }
 
