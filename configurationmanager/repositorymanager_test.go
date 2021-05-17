@@ -15,7 +15,7 @@ func TestGivenDirectoryWithGitAndOriginSetWhenGetOriginCalledThenReturnOriginUrl
 	tmpDirPath := t.TempDir()
 	setupGitWithOrigin(tmpDirPath, origin)
 
-	manager := RepositoryManager{Path: tmpDirPath}
+	manager := repositoryManager{restorosDirectory: tmpDirPath}
 	assert.Equal(t, origin, manager.GetOrigin())
 }
 
@@ -23,13 +23,13 @@ func TestGivenDirectoryWithGitInitAndNoOriginSetWhenGetOriginCalledThenReturnEmp
 	tmpDirPath := t.TempDir()
 	setupGit(tmpDirPath)
 
-	manager := RepositoryManager{Path: tmpDirPath}
+	manager := repositoryManager{restorosDirectory: tmpDirPath}
 	assert.Equal(t, "", manager.GetOrigin())
 }
 
 func TestGivenDirectoryWithoutGitInitSetWhenGetOriginCalledThenReturnConfigurationDoesntExist(t *testing.T) {
 	tmpDirPath := t.TempDir()
-	manager := RepositoryManager{Path: tmpDirPath}
+	manager := repositoryManager{restorosDirectory: tmpDirPath}
 	assert.Equal(t, "repository doesn't exist", manager.GetOrigin())
 }
 
@@ -37,7 +37,7 @@ func TestGivenGitDirectoryWhenSetOriginCalledWithValidURLThenShouldSetOriginToPr
 	tmpDirPath := t.TempDir()
 	repository := setupGit(tmpDirPath)
 
-	manager := RepositoryManager{Path: tmpDirPath}
+	manager := repositoryManager{restorosDirectory: tmpDirPath}
 
 	if assert.Nil(t, manager.SetOrigin(origin)) {
 		remote, _ := repository.Remote("origin")
@@ -46,25 +46,25 @@ func TestGivenGitDirectoryWhenSetOriginCalledWithValidURLThenShouldSetOriginToPr
 }
 
 func TestWhenSetOriginCalledWithInvalidURLThenReturnInvalidUrlError(t *testing.T) {
-	manager := RepositoryManager{Path: ""}
+	manager := repositoryManager{restorosDirectory: ""}
 	assert.EqualError(t, manager.SetOrigin("foobar"), "invalid origin foobar (only support github via ssh)")
 }
 
 func TestWhenSetOriginCalledWithHostNotGithubThenReturnInvalidUrlError(t *testing.T) {
-	manager := RepositoryManager{Path: ""}
+	manager := repositoryManager{restorosDirectory: ""}
 	notGithubUrl := "https://foobar.com/bizbaz"
 	assert.EqualError(t, manager.SetOrigin(notGithubUrl), fmt.Sprintf("invalid origin %s (only support github via ssh)", notGithubUrl))
 }
 
 func TestGivenNotGitInitializedDirectoryWhenSetOriginCalledThenReturnRepositoryNotFoundError(t *testing.T) {
 	tmpDirPath := t.TempDir()
-	manager := RepositoryManager{Path: tmpDirPath}
+	manager := repositoryManager{restorosDirectory: tmpDirPath}
 	assert.EqualError(t, manager.SetOrigin(origin), "repository not found or initialized")
 }
 
 func TestGivenEmptyDirectoryWhenInitializeCalledThenShouldInitializeGitRepository(t *testing.T) {
 	tmpDirPath := t.TempDir()
-	manager := RepositoryManager{Path: tmpDirPath}
+	manager := repositoryManager{restorosDirectory: tmpDirPath}
 	assert.Nil(t, manager.Initialize())
 	assert.True(t, isGitInitialized(tmpDirPath))
 }

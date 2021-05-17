@@ -4,6 +4,7 @@ import (
 	"restoros/configurationmanager"
 	"restoros/handler"
 	"restoros/handler/confighandler"
+	"restoros/sourcemanager"
 )
 
 func Parse(args []string) (*Command, bool) {
@@ -11,8 +12,11 @@ func Parse(args []string) (*Command, bool) {
 }
 
 func createCommandTree() *node {
-	manager := &configurationmanager.Manager{}
-	repositoryManager := &configurationmanager.RepositoryManager{Path: configurationmanager.RestorosDirectory()}
+	sourceManager := sourcemanager.NewSourceManager()
+	
+	manager := configurationmanager.NewManager(configurationmanager.HomeDirectory())
+	repositoryManager := configurationmanager.NewRepositoryManager(configurationmanager.HomeDirectory())
+	
 	notImplementedHandler := &handler.NotImplementedHandler{}
 	return &node{
 		children: []*node{
@@ -25,7 +29,15 @@ func createCommandTree() *node {
 			{
 				argument: "install",
 				children: []*node{
-					{command: &Command{handler: notImplementedHandler}},
+					{
+						command: &Command{
+							handler: &handler.InstallHandler{
+								Manager:       &manager,
+								SourceManager: &sourceManager,
+								RepoManager:   &repositoryManager,
+							},
+						},
+					},
 				},
 			},
 			{
@@ -90,8 +102,8 @@ func createCommandTree() *node {
 							{
 								command: &Command{
 									handler: &confighandler.ConfigInitHandler{
-										Manager:     manager,
-										RepoManager: repositoryManager,
+										Manager:     &manager,
+										RepoManager: &repositoryManager,
 									},
 								},
 							},
@@ -103,7 +115,7 @@ func createCommandTree() *node {
 							{
 								command: &Command{
 									handler: &confighandler.ConfigSyncHandler{
-										RepoManager: repositoryManager,
+										RepoManager: &repositoryManager,
 									},
 								},
 							},
@@ -115,7 +127,7 @@ func createCommandTree() *node {
 							{
 								command: &Command{
 									handler: &confighandler.ConfigOriginHandler{
-										RepoManager: repositoryManager,
+										RepoManager: &repositoryManager,
 									},
 								},
 							},

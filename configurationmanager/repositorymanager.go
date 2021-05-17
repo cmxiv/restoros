@@ -8,23 +8,27 @@ import (
 	"github.com/go-git/go-git/v5/config"
 )
 
-type IRepositoryManager interface {
-	Initialize() error
+type RepositoryManager interface {
 	Sync() error
+	Initialize() error
 	GetOrigin() string
 	SetOrigin(string) error
 }
 
-type RepositoryManager struct {
-	Path string
+type repositoryManager struct {
+	restorosDirectory string
 }
 
-func (manager *RepositoryManager) Initialize() error {
-	_, err := git.PlainInit(manager.Path, false)
+func NewRepositoryManager(homeDirectory string) repositoryManager {
+	return repositoryManager{restorosDirectory: restorosDirectory(homeDirectory)}
+}
+
+func (manager *repositoryManager) Initialize() error {
+	_, err := git.PlainInit(manager.restorosDirectory, false)
 	return err
 }
 
-func (manager *RepositoryManager) Sync() error {
+func (manager *repositoryManager) Sync() error {
 	repo := manager.getRepository()
 	if repo == nil {
 		return fmt.Errorf("repository doesn't exist")
@@ -47,7 +51,7 @@ func (manager *RepositoryManager) Sync() error {
 	return nil
 }
 
-func (manager *RepositoryManager) GetOrigin() string {
+func (manager *repositoryManager) GetOrigin() string {
 	repo := manager.getRepository()
 	if repo == nil {
 		return "repository doesn't exist"
@@ -61,7 +65,7 @@ func (manager *RepositoryManager) GetOrigin() string {
 	return remote.Config().URLs[0]
 }
 
-func (manager *RepositoryManager) SetOrigin(originUri string) error {
+func (manager *repositoryManager) SetOrigin(originUri string) error {
 
 	if !strings.HasPrefix(originUri, "git@github.com") || !strings.HasSuffix(originUri, ".git") {
 		return fmt.Errorf("invalid origin %s (only support github via ssh)", originUri)
@@ -83,8 +87,8 @@ func (manager *RepositoryManager) SetOrigin(originUri string) error {
 	return nil
 }
 
-func (manager *RepositoryManager) getRepository() *git.Repository {
-	repo, err := git.PlainOpen(manager.Path)
+func (manager *repositoryManager) getRepository() *git.Repository {
+	repo, err := git.PlainOpen(manager.restorosDirectory)
 	if err != nil {
 		return nil
 	}

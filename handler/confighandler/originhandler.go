@@ -6,7 +6,7 @@ import (
 )
 
 type ConfigOriginHandler struct {
-	RepoManager configurationmanager.IRepositoryManager
+	RepoManager configurationmanager.RepositoryManager
 }
 
 func (handler *ConfigOriginHandler) Handle(args []string) error {

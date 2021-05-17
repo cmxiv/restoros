@@ -1,9 +1,9 @@
 package configurationmanager
 
 type MockManager struct {
-	IsInitialized bool
+	IsInitialized    bool
 	ReadReturnConfig RestorosConfiguration
-	ReadReturnError error
+	ReadReturnError  error
 	WriteReturnError error
 }
 
@@ -17,4 +17,8 @@ func (manager MockManager) Read() (*RestorosConfiguration, error) {
 
 func (manager MockManager) Write(configuration *RestorosConfiguration) error {
 	return manager.WriteReturnError
+}
+
+func (manager MockManager) AddPackage(pkg Package) error {
+	return nil
 }

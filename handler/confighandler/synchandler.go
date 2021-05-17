@@ -3,7 +3,7 @@ package confighandler
 import "restoros/configurationmanager"
 
 type ConfigSyncHandler struct {
-	RepoManager configurationmanager.IRepositoryManager
+	RepoManager configurationmanager.RepositoryManager
 }
 
 func (handler *ConfigSyncHandler) Handle(args []string) error {

@@ -6,8 +6,8 @@ import (
 )
 
 type ConfigInitHandler struct {
-	Manager     configurationmanager.IManager
-	RepoManager configurationmanager.IRepositoryManager
+	Manager     configurationmanager.Manager
+	RepoManager configurationmanager.RepositoryManager
 }
 
 func (handler *ConfigInitHandler) Handle(args []string) error {
