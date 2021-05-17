@@ -21,5 +21,9 @@ func (handler *ConfigInitHandler) Handle(args []string) error {
 	}
 
 	initialConfiguration := &configurationmanager.RestorosConfiguration{}
-	return handler.Manager.Write(initialConfiguration)
+	if err = handler.Manager.Write(initialConfiguration); err != nil {
+		return err
+	}
+
+	return handler.RepoManager.Sync()
 }

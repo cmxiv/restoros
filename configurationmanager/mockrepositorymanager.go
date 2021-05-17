@@ -10,6 +10,10 @@ func (manager *MockRepositoryManager) Initialize() error {
 	return manager.InitializeReturn
 }
 
+func (manager *MockRepositoryManager) Sync() error {
+	return nil
+}
+
 func (manager *MockRepositoryManager) GetOrigin() string {
 	return manager.GetOriginReturn
 }

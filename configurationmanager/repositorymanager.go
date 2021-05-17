@@ -10,6 +10,7 @@ import (
 
 type IRepositoryManager interface {
 	Initialize() error
+	Sync() error
 	GetOrigin() string
 	SetOrigin(string) error
 }
@@ -21,6 +22,29 @@ type RepositoryManager struct {
 func (manager *RepositoryManager) Initialize() error {
 	_, err := git.PlainInit(manager.Path, false)
 	return err
+}
+
+func (manager *RepositoryManager) Sync() error {
+	repo := manager.getRepository()
+	if repo == nil {
+		return fmt.Errorf("repository doesn't exist")
+	}
+
+	worktree, _ := repo.Worktree()
+	if status, _ := worktree.Status(); !status.IsClean() {
+		worktree.Add(CONFIGURATION_FILE_NAME)
+		worktree.Commit("sync configuration file", &git.CommitOptions{})
+	}
+
+	if _, err := repo.Remote("origin"); err != nil {
+		return fmt.Errorf("no origin available. set an origin first and try to sync again")
+	}
+
+	if err := repo.Push(&git.PushOptions{RemoteName: "origin"}); err != nil {
+		return fmt.Errorf("unable to push changes to remote")
+	}
+
+	return nil
 }
 
 func (manager *RepositoryManager) GetOrigin() string {
