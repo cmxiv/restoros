@@ -6,10 +6,13 @@ func NewAptSource() apt {
 	return apt{}
 }
 
-type apt struct{}
+type apt struct{
+	packageName    string
+	packageVersion string
+}
 
 func (apt *apt) Find() error {
-	return nil
+	return fmt.Errorf("some error")
 }
 
 func (apt *apt) Name() string {
@@ -31,4 +34,9 @@ func (apt *apt) Update() error {
 func (apt *apt) Install() error {
 	fmt.Println("called install on apt")
 	return nil
+}
+
+func (apt *apt) SetPackage(name string, version string) {
+	apt.packageName = name
+	apt.packageVersion = version
 }

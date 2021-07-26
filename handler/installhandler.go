@@ -21,13 +21,13 @@ func (handler *InstallHandler) Handle(args []string) error {
 		return fmt.Errorf(INSTALL_USAGE)
 	}
 
-	source, err := handler.findSource(parsedArguments.source, parsedArguments.packageName)
+	source, err := handler.findSource(parsedArguments)
 	if err != nil {
 		return err
 	}
 
 	if err = source.Install(); err != nil {
-		return fmt.Errorf("unable to install %s from source %s", parsedArguments.packageName, parsedArguments.source)
+		return fmt.Errorf("unable to install %s from source %s", parsedArguments.packageName, source.Name())
 	}
 
 	pkg := configurationmanager.Package{
@@ -75,12 +75,13 @@ func (handler *InstallHandler) parseArguments(args []string) (parsedArguments, e
 	}, err
 }
 
-func (handler *InstallHandler) findSource(source string, packageName string) (sourcemanager.Source, error) {
-	if source != "" {
-		return handler.SourceManager.FindByName(source), nil
+func (handler *InstallHandler) findSource(pa parsedArguments) (sourcemanager.Source, error) {
+	handler.SourceManager.SetSearchPackage(pa.packageName, pa.version)
+	if pa.source != "" {
+		return handler.SourceManager.FindByName(pa.source), nil
 	}
 
-	sources := handler.SourceManager.FindByPackage(packageName)
+	sources := handler.SourceManager.FindByPackage()
 	if len(sources) == 1 {
 		return sources[0], nil
 	}
@@ -95,7 +96,7 @@ func (handler *InstallHandler) findSource(source string, packageName string) (so
 	}
 	return nil, fmt.Errorf(
 		"found multiple sources (see below) with package %s, use --source to select your choice.\n%s",
-		packageName,
+		pa.packageName,
 		strings.Join(sourceNames, "\n"),
 	)
 }

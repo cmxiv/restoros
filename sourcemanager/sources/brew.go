@@ -1,15 +1,20 @@
 package sources
 
-import "fmt"
+import (
+	"os/exec"
+)
 
 func NewBrewSource() brew {
 	return brew{}
 }
 
-type brew struct {}
+type brew struct {
+	packageName    string
+	packageVersion string
+}
 
 func (brew *brew) Find() error {
-	return nil
+	return exec.Command("brew", "search", brew.packageName).Run()
 }
 
 func (brew *brew) Name() string {
@@ -17,11 +22,11 @@ func (brew *brew) Name() string {
 }
 
 func (brew *brew) Purge() error {
-	return nil
+	return brew.Remove()
 }
 
 func (brew *brew) Remove() error {
-	return nil
+	return exec.Command("brew", "remove", brew.packageName).Run()
 }
 
 func (brew *brew) Update() error {
@@ -29,6 +34,10 @@ func (brew *brew) Update() error {
 }
 
 func (brew *brew) Install() error {
-	fmt.Println("called install on brew")
-	return nil
+	return exec.Command("brew", "install", brew.packageName).Run()
+}
+
+func (brew *brew) SetPackage(name string, version string) {
+	brew.packageName = name
+	brew.packageVersion = version
 }
