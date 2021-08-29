@@ -65,5 +65,6 @@ Before download and setup of the project, make sure that you have Go installed. 
 ```
 git clone git@github.com:cmxiv/restoros.git
 cd restoros
+go mod tidy
 make test
 ```
